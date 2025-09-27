@@ -1,10 +1,13 @@
 import enum
-import uuid
 from datetime import datetime
-from sqlalchemy.dialects.postgresql.base import UUID
-from sqlalchemy import Column, DateTime, ForeignKey, Enum
-from sqlalchemy.sql.sqltypes import String
-from app.models.base import Base
+from typing import Optional
+from uuid import UUID
+
+from sqlalchemy import String, DateTime, Enum, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+
+from .base import Base
 
 
 class GameStatus(enum.Enum):
@@ -16,11 +19,11 @@ class GameStatus(enum.Enum):
 class Games(Base):
     __tablename__ = "games"
 
-    player1_sid: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("players.sid"), nullable=False)
-    player2_sid: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("players.sid"), nullable=False)
-    board_player1: Mapped[str] = mapped_column(String, nullable=False)
-    board_player2: Mapped[str] = mapped_column(String, nullable=False)
+    player1_sid: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=False)
+    player2_sid: Mapped[Optional[UUID]] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True)
+    board: Mapped[str] = mapped_column(String, nullable=False, default=",".join(["_"] * 9))
     status: Mapped[GameStatus] = mapped_column(Enum(GameStatus), default=GameStatus.waiting, nullable=False)
-    winner_sid: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    current_turn_sid: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True)
+    winner_sid: Mapped[Optional[UUID]] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True)
+    current_turn_sid: Mapped[Optional[UUID]] = mapped_column(
+        PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True
+    )
