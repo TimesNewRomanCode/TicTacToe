@@ -21,7 +21,7 @@ class PlayersCRUD:
 
     async def get_player_by_username(self, username, session: AsyncSession):
         result = await session.execute(select(Players).where(Players.username == username))
-        return result.scalars().one()
+        return result.scalars().first()
 
     async def delete_player(self, sid, session: AsyncSession):
         result = await session.execute(delete(Players).where(Players.sid == sid))
