@@ -1,8 +1,8 @@
-from sqlalchemy import select, update
+from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.games import Games
 
-class PlayersCRUD:
+class GamesCRUD:
     def __init__(self):
         pass
 
@@ -22,4 +22,17 @@ class PlayersCRUD:
     async def update_game_status(self, sid, new_status, session: AsyncSession):
         stmt = update(Games).where(Games.sid == sid).values(status=new_status)
         result = await session.execute(stmt)
+        await session.commit()
+        return result.rowcount
+
+    async def update_game_winner(self, sid, winner_sid, session: AsyncSession):
+        stmt = update(Games).where(Games.sid == sid).values(winner_sid=winner_sid)
+        result = await session.execute(stmt)
+        await session.commit()
+        return result.rowcount
+
+    async def update_current_turn(self, sid, current_turn_sid, session: AsyncSession):
+        stmt = update(Games).where(Games.sid == sid).values(current_turn_sid=current_turn_sid)
+        result = await session.execute(stmt)
+        await session.commit()
         return result.rowcount

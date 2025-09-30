@@ -1,4 +1,5 @@
 import enum
+import uuid
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -21,7 +22,6 @@ class Games(Base):
 
     player1_sid: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=False)
     player2_sid: Mapped[Optional[UUID]] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True)
-    board: Mapped[str] = mapped_column(String, nullable=False, default=",".join(["_"] * 9))
     status: Mapped[GameStatus] = mapped_column(Enum(GameStatus), default=GameStatus.waiting, nullable=False)
     winner_sid: Mapped[Optional[UUID]] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("players.sid"), nullable=True)
     current_turn_sid: Mapped[Optional[UUID]] = mapped_column(

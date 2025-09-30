@@ -4,7 +4,7 @@ from app.models.players import Players
 from app.schemas.players import RegistrationScheme, LoginScheme
 
 
-class playersService:
+class PlayersService:
     def __init__(self):
         self.player_crud = PlayersCRUD()
 
